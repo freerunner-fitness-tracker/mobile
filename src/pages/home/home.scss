@@ -13,6 +13,25 @@ page-home {
         font-weight: 500;
         box-shadow: $floating-elements-box-shadow
     }
+    .waypoint-log {
+        background: #fff;
+        box-shadow: $floating-elements-box-shadow;
+        margin-bottom: $content-padding;
+        .entry {
+            padding: 5px;
+            font-size: 10px;
+            display: flex;
+            &__index {
+                font-weight: 600;
+                flex: 0 30px;
+                padding-right: 10px;
+                text-align: right;
+            }
+            &__data {
+                flex: 1;
+            }
+        }
+    }
     .infopanel {
         display: flex;
         color: color($colors, grey);
@@ -29,6 +48,7 @@ page-home {
     }
     .signal, .position {
         display: flex;
+        white-space: nowrap;
         &__icon {
             flex: 0 25px;
             img {

@@ -13,15 +13,36 @@
 
     <div class="content">
 
+        <div class="waypoint-log">
+            <div class="entry" *ngFor="let waypoint of waypoints; let i=index">
+                <div class="entry__index">
+                    {{ i }}
+                </div>
+                <div class="entry__data">
+                    N {{ waypoint.latitude }} /
+                    E {{ waypoint.longitude }} /
+                    Acc {{ waypoint.accuracy }} /
+                    Speed {{ waypoint.speed }} /
+                    Alt {{ waypoint.altitude }} /
+                    TS {{ getTime(waypoint.timestamp) }}
+                </div>
+            </div>
+        </div>
+
         <div class="infopanel">
             <div class="signal">
                 <div class="signal__icon">
-                    <img src="assets/images/icon-signalbars.png"
-                         srcset="assets/images/icon-signalbars.png 1x, assets/images/icon-signalbars@2x.png 2x"
+                    <img *ngIf="locationTracker.hasSignal"
+                         src="assets/images/icon-signal-good.png"
+                         srcset="assets/images/icon-signal-good.png 1x, assets/images/icon-signal-good@2x.png 2x"
+                         alt=""/>
+                    <img *ngIf="!locationTracker.hasSignal"
+                         src="assets/images/icon-signal-lost.png"
+                         srcset="assets/images/icon-signal-lost.png 1x, assets/images/icon-signal-lost@2x.png 2x"
                          alt=""/>
                 </div>
                 <div class="signal__label">
-                    Good signal
+                    {{ locationTracker.hasSignal ? 'Good signal' : 'No signal' }}
                 </div>
             </div>
             <div class="position">
@@ -31,14 +52,17 @@
                          alt=""/>
                 </div>
                 <div class="position__label">
-                    <span>N {{ currentPosition.lat }}</span>
-                    <span>E {{ currentPosition.lng }}</span>
+                    <span>N {{ locationTracker.lat }}</span>
+                    <span>E {{ locationTracker.lng }}</span>
                 </div>
             </div>
         </div>
 
-        <button ion-button color="secondary" large block id="start-tracking">
-            Start tracking
+        <button ion-button [color]="isTracking ? 'danger' : 'secondary'"
+                [disabled]="!locationTracker.hasSignal"
+                large block id="start-tracking"
+                (click)="toggleTracking()">
+            {{ isTracking ? 'Stop tracking' : 'Start tracking' }}
         </button>
     </div>
 

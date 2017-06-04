@@ -1,9 +1,9 @@
 import {Component, ViewChild} from '@angular/core'
 import {NavController, Platform} from 'ionic-angular'
-import { StatusBar } from '@ionic-native/status-bar';
+import {StatusBar} from '@ionic-native/status-bar'
 
 import {CameraPosition, GoogleMap, GoogleMaps, GoogleMapsEvent, LatLng} from '@ionic-native/google-maps'
-import {Geolocation} from '@ionic-native/geolocation'
+import {LocationTracker, Waypoint} from '../../providers/location-tracker'
 
 @Component({
     selector: 'page-home',
@@ -14,15 +14,15 @@ export class HomePage {
 
     @ViewChild('map') map;
 
-    public currentPosition: LatLng = new LatLng(0, 0)
-    public positionUpdates
     public gmap: GoogleMap;
+    public isTracking: boolean = false
+    public waypoints: Array<Waypoint> = []
 
     constructor (public navCtrl: NavController,
                  private googleMaps: GoogleMaps,
                  private platform: Platform,
                  private statusBar: StatusBar,
-                 private geolocation: Geolocation) {
+                 private locationTracker: LocationTracker) {
         platform.ready().then(() => {
             this.init();
             this.statusBar.overlaysWebView(true);
@@ -32,36 +32,41 @@ export class HomePage {
 
     init () {
         this.loadMap();
+        this.locationTracker.startTracking()
+        this.locationTracker.onPositionUpdate((lat, lng, waypoints) => {
+            this.updatePosition(lat, lng)
+            this.waypoints = waypoints
+        })
+    }
 
-        const geoOptions = {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
+    toggleTracking () {
+        if (this.isTracking) {
+            this.stopTracking();
+        } else {
+            this.startTracking();
         }
+    }
 
-        this.geolocation.getCurrentPosition(geoOptions).then((data) => {
-            console.log('Initial Position is', data)
-            this.updatePosition(data.coords.latitude, data.coords.longitude)
-        }).catch((error) => {
-            console.log('Error getting location', error);
-        });
+    startTracking () {
+        this.isTracking = true
+        this.waypoints = []
+        this.locationTracker.startRecording()
+    }
 
-        this.positionUpdates = this.geolocation.watchPosition(geoOptions).subscribe((data) => {
-            if (data.coords) {
-                this.updatePosition(data.coords.latitude, data.coords.longitude)
-            }
-        });
+    stopTracking () {
+        this.isTracking = false
+        this.waypoints = this.locationTracker.stopRecording()
     }
 
     ionViewWillLeave () {
-        this.positionUpdates.unsubscribe()
+        this.stopTracking();
     }
 
     updatePosition (lat: number, lng: number) {
         console.log('Updating position to', lat, lng)
 
         const target: LatLng = new LatLng(lat, lng);
-        this.currentPosition = target
+
         const position: CameraPosition = {
             target,
             zoom: 16
@@ -84,6 +89,15 @@ export class HomePage {
         });
 
         this.updatePosition(47.0272, 8.4436223)
+    }
+
+    getTime(unixTime: number): string {
+        const date = new Date(unixTime * 1000)
+        const hours = date.getHours();
+        const minutes = '0' + date.getMinutes();
+        const seconds = '0' + date.getSeconds();
+
+        return `${hours}:${minutes.substr(- 2)}:${seconds.substr(- 2)}`;
     }
 
 }
