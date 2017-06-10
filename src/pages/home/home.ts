@@ -4,6 +4,7 @@ import {StatusBar} from '@ionic-native/status-bar'
 
 import {LocationTracker, Waypoint} from '../../providers/location-tracker'
 import * as Leaflet from 'leaflet'
+import config from '../../config'
 
 @Component({
     selector: 'page-home',
@@ -69,8 +70,8 @@ export class HomePage {
         Leaflet.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
             maxZoom: 18,
-            id: 'id',
-            accessToken: 'accessToken'
+            id: config.id,
+            accessToken: config.accessToken
         }).addTo(mymap);
 
         this.updatePosition(47.0272, 8.4436223)
