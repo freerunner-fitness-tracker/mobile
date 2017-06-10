@@ -16,18 +16,18 @@ export class LocationTracker {
     public watch: any;
     public lat: number = 0;
     public lng: number = 0;
-    public callbacks: Array<Callback> = []
-    public record: boolean = false
-    public hasSignal: boolean = false
-    public waypoints: Array<Waypoint> = []
+    public callbacks: Array<Callback> = [];
+    public record: boolean = false;
+    public hasSignal: boolean = false;
+    public waypoints: Array<Waypoint> = [];
 
-    constructor (public zone: NgZone,
-                 private geolocation: Geolocation,
-    //             private backgroundGeolocation: BackgroundGeolocation
+    constructor(public zone: NgZone,
+                private geolocation: Geolocation,
+                //             private backgroundGeolocation: BackgroundGeolocation
     ) {
     }
 
-    startTracking () {
+    startTracking() {
         // const config = {
         //     desiredAccuracy: 0,
         //     stationaryRadius: 20,
@@ -56,13 +56,13 @@ export class LocationTracker {
             });
     }
 
-    updatePosition (coords) {
+    updatePosition(coords) {
 
-        if(coords === undefined) {
+        if (coords === undefined) {
             return this.hasSignal = false
         }
 
-        this.hasSignal = true
+        this.hasSignal = true;
 
         this.lat = coords.latitude;
         this.lng = coords.longitude;
@@ -75,39 +75,38 @@ export class LocationTracker {
             speed: coords.speed,
             heading: coords.heading,
             altitudeAccuracy: coords.altitudeAccuracy,
-            timestamp: Math.ceil(+ Date.now() / 1000)
-        }
+            timestamp: Math.ceil(+Date.now() / 1000)
+        };
 
         if (this.record) {
-            this.waypoints.push(waypoint)
-
-            console.log('recording', this.waypoints)
+            this.waypoints.push(waypoint);
+            console.log('recording', this.waypoints);
         }
 
         this.callbacks.forEach(c => c(this.lat, this.lng, this.waypoints))
     }
 
-    startRecording () {
+    startRecording() {
         this.waypoints = [];
         this.record = true
     }
 
-    stopRecording () {
+    stopRecording() {
         this.record = false
         return this.waypoints
     }
 
-    onPositionUpdate (callback: Callback) {
+    onPositionUpdate(callback: Callback) {
         this.callbacks.push(callback)
     }
 
-    stopTracking () {
+    stopTracking() {
         console.log('stopTracking');
         // this.backgroundGeolocation.finish();
         this.watch.unsubscribe();
     }
 
-    getCurrentPosition (): LatLng {
+    getCurrentPosition(): LatLng {
         return new LatLng(this.lat, this.lng)
     }
 

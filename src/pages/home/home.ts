@@ -32,10 +32,10 @@ export class HomePage {
 
     init () {
         this.loadMap();
-        this.locationTracker.startTracking()
+        this.locationTracker.startTracking();
         this.locationTracker.onPositionUpdate((lat, lng, waypoints) => {
-            this.updatePosition(lat, lng)
-            this.waypoints = waypoints
+            this.updatePosition(lat, lng);
+            this.waypoints = waypoints;
         })
     }
 
@@ -48,13 +48,13 @@ export class HomePage {
     }
 
     startTracking () {
-        this.isTracking = true
-        this.waypoints = []
+        this.isTracking = true;
+        this.waypoints = [];
         this.locationTracker.startRecording()
     }
 
     stopTracking () {
-        this.isTracking = false
+        this.isTracking = false;
         this.waypoints = this.locationTracker.stopRecording()
     }
 
@@ -63,7 +63,7 @@ export class HomePage {
     }
 
     updatePosition (lat: number, lng: number) {
-        console.log('Updating position to', lat, lng)
+        console.log('Updating position to', lat, lng);
 
         const target: LatLng = new LatLng(lat, lng);
 
