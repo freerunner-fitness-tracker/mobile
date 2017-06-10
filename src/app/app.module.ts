@@ -11,7 +11,7 @@ import {SplashScreen} from '@ionic-native/splash-screen'
 import {GoogleMaps} from '@ionic-native/google-maps'
 
 import {Geolocation} from '@ionic-native/geolocation'
-import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
+// import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
 import {LocationTracker} from '../providers/location-tracker'
 
 @NgModule({
@@ -35,7 +35,7 @@ import {LocationTracker} from '../providers/location-tracker'
         SplashScreen,
         GoogleMaps,
         Geolocation,
-        BackgroundGeolocation,
+        // BackgroundGeolocation,
         LocationTracker,
         {provide: ErrorHandler, useClass: IonicErrorHandler}
     ]

@@ -1,6 +1,6 @@
 import {Injectable, NgZone} from '@angular/core'
 import 'rxjs/add/operator/map'
-import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
+// import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
 import {Geolocation, Geoposition} from '@ionic-native/geolocation'
 import {LatLng} from '@ionic-native/google-maps'
 
@@ -23,25 +23,26 @@ export class LocationTracker {
 
     constructor (public zone: NgZone,
                  private geolocation: Geolocation,
-                 private backgroundGeolocation: BackgroundGeolocation) {
+    //             private backgroundGeolocation: BackgroundGeolocation
+    ) {
     }
 
     startTracking () {
-        const config = {
-            desiredAccuracy: 0,
-            stationaryRadius: 20,
-            distanceFilter: 10,
-            debug: true,
-            interval: 2000
-        };
+        // const config = {
+        //     desiredAccuracy: 0,
+        //     stationaryRadius: 20,
+        //     distanceFilter: 10,
+        //     debug: true,
+        //     interval: 2000
+        // };
 
-        this.backgroundGeolocation.configure(config).subscribe((location) => {
-            console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
-
-            this.zone.run(() => this.updatePosition(location));
-        }, err => console.log(err));
-
-        this.backgroundGeolocation.start();
+        // this.backgroundGeolocation.configure(config).subscribe((location) => {
+        //     console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
+        //
+        //     this.zone.run(() => this.updatePosition(location));
+        // }, err => console.log(err));
+        //
+        // this.backgroundGeolocation.start();
 
         const options = {
             frequency: 3000,
@@ -102,7 +103,7 @@ export class LocationTracker {
 
     stopTracking () {
         console.log('stopTracking');
-        this.backgroundGeolocation.finish();
+        // this.backgroundGeolocation.finish();
         this.watch.unsubscribe();
     }
 
