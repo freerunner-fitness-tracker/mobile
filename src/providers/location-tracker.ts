@@ -2,7 +2,6 @@ import {Injectable, NgZone} from '@angular/core'
 import 'rxjs/add/operator/map'
 // import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
 import {Geolocation, Geoposition} from '@ionic-native/geolocation'
-import {LatLng} from '@ionic-native/google-maps'
 
 type Callback = (lat: number, lng: number, waypoints?: Array<Waypoint>) => any
 
@@ -106,8 +105,8 @@ export class LocationTracker {
         this.watch.unsubscribe();
     }
 
-    getCurrentPosition(): LatLng {
-        return new LatLng(this.lat, this.lng)
+    getCurrentPosition() {
+        return [this.lat, this.lng]
     }
 
 }

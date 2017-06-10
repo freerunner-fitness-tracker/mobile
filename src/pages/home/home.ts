@@ -2,8 +2,8 @@ import {Component, ViewChild} from '@angular/core'
 import {NavController, Platform} from 'ionic-angular'
 import {StatusBar} from '@ionic-native/status-bar'
 
-import {CameraPosition, GoogleMap, GoogleMaps, GoogleMapsEvent, LatLng} from '@ionic-native/google-maps'
 import {LocationTracker, Waypoint} from '../../providers/location-tracker'
+import * as Leaflet from 'leaflet'
 
 @Component({
     selector: 'page-home',
@@ -14,12 +14,10 @@ export class HomePage {
 
     @ViewChild('map') map;
 
-    public gmap: GoogleMap;
     public isTracking: boolean = false
     public waypoints: Array<Waypoint> = []
 
     constructor (public navCtrl: NavController,
-                 private googleMaps: GoogleMaps,
                  private platform: Platform,
                  private statusBar: StatusBar,
                  private locationTracker: LocationTracker) {
@@ -64,29 +62,16 @@ export class HomePage {
 
     updatePosition (lat: number, lng: number) {
         console.log('Updating position to', lat, lng);
-
-        const target: LatLng = new LatLng(lat, lng);
-
-        const position: CameraPosition = {
-            target,
-            zoom: 16
-        };
-
-        // move the map's camera to position
-        this.gmap.moveCamera(position);
     }
 
     loadMap () {
-        // create a new map by passing HTMLElement
-        let element: HTMLElement = document.getElementById('map');
-
-        this.gmap = this.googleMaps.create(element);
-
-        // listen to MAP_READY event
-        // You must wait for this event to fire before adding something to the map or modifying it in anyway
-        this.gmap.one(GoogleMapsEvent.MAP_READY).then(() => {
-            this.gmap.setMyLocationEnabled(true);
-        });
+        const mymap = Leaflet.map('map').setView([51.505, -0.09], 13);
+        Leaflet.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            maxZoom: 18,
+            id: 'id',
+            accessToken: 'accessToken'
+        }).addTo(mymap);
 
         this.updatePosition(47.0272, 8.4436223)
     }

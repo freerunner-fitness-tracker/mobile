@@ -8,7 +8,6 @@ import {ListPage} from '../pages/list/list'
 
 import {StatusBar} from '@ionic-native/status-bar'
 import {SplashScreen} from '@ionic-native/splash-screen'
-import {GoogleMaps} from '@ionic-native/google-maps'
 
 import {Geolocation} from '@ionic-native/geolocation'
 // import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
@@ -33,7 +32,6 @@ import {LocationTracker} from '../providers/location-tracker'
     providers: [
         StatusBar,
         SplashScreen,
-        GoogleMaps,
         Geolocation,
         // BackgroundGeolocation,
         LocationTracker,
