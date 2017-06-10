@@ -86,8 +86,5 @@
     <plugin name="cordova-plugin-statusbar" spec="^2.2.2" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.1" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
-    <plugin name="plugin.google.maps" spec="~1.3.9">
-        <variable name="API_KEY_FOR_ANDROID" value="AIzaSyCx1QR8KQuAKDcQqKV88DmeuCx72luuUAk" />
-        <variable name="API_KEY_FOR_IOS" value="AIzaSyCjYThSbFxbATPXu6VyVGvf3pL9yQhXjGo" />
-    </plugin>
+
 </widget>
