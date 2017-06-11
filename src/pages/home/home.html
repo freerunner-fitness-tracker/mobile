@@ -55,8 +55,8 @@
             </div>
         </div>
 
+        <!--[disabled]="!locationTracker.hasSignal"-->
         <button ion-button [color]="isTracking ? 'danger' : 'secondary'"
-                [disabled]="!locationTracker.hasSignal"
                 large block id="start-tracking"
                 (click)="toggleTracking()">
             {{ isTracking ? 'Stop tracking' : 'Start tracking' }}

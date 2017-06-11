@@ -4,6 +4,8 @@ import {StatusBar} from '@ionic-native/status-bar';
 
 import {LocationTracker, Waypoint} from '../../providers/location-tracker';
 import * as Leaflet from 'leaflet';
+import {ActivitiesStore, Activity} from '../../providers/activities-store';
+import {unixTime} from '../../utils';
 
 @Component({
     selector: 'page-home',
@@ -13,6 +15,7 @@ import * as Leaflet from 'leaflet';
 export class HomePage {
 
     public isTracking: boolean = false;
+    public startedAt: number;
     public waypoints: Array<Waypoint> = [];
     public map;
     public positionMarker;
@@ -22,9 +25,11 @@ export class HomePage {
     constructor (public navCtrl: NavController,
                  private platform: Platform,
                  private statusBar: StatusBar,
+                 private activitiesStore: ActivitiesStore,
                  private locationTracker: LocationTracker) {
         platform.ready().then(() => {
             this.init();
+            this.activitiesStore.openDB();
             this.statusBar.overlaysWebView(true);
             this.statusBar.backgroundColorByHexString('#00487B');
         });
@@ -49,14 +54,22 @@ export class HomePage {
 
     startTracking () {
         this.isTracking = true;
+        this.startedAt = unixTime();
         this.waypoints = [];
         this.addPath();
         this.locationTracker.startTracking();
     }
 
-    stopTracking () {
+    async stopTracking () {
         this.isTracking = false;
         this.waypoints = this.locationTracker.stopTracking();
+        const activity: Activity = {
+            start: this.startedAt,
+            end: unixTime(),
+            waypoints: this.waypoints
+        };
+        const recorded = await this.activitiesStore.addActivity(activity);
+        console.log('has', recorded);
     }
 
     ionViewWillLeave () {
