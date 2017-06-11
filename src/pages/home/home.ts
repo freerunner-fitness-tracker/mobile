@@ -5,7 +5,7 @@ import {StatusBar} from '@ionic-native/status-bar';
 import {LocationTracker, Waypoint} from '../../providers/location-tracker';
 import * as Leaflet from 'leaflet';
 import {ActivitiesStore, Activity} from '../../providers/activities-store';
-import {unixTime} from '../../utils';
+import {getTime, unixTime} from '../../utils';
 
 @Component({
     selector: 'page-home',
@@ -17,6 +17,7 @@ export class HomePage {
     public isTracking: boolean = false;
     public startedAt: number;
     public waypoints: Array<Waypoint> = [];
+    public showWaypointLog: boolean = true
     public map;
     public positionMarker;
     public positionMarkerRadius;
@@ -29,7 +30,6 @@ export class HomePage {
                  private locationTracker: LocationTracker) {
         platform.ready().then(() => {
             this.init();
-            this.activitiesStore.openDB();
             this.statusBar.overlaysWebView(true);
             this.statusBar.backgroundColorByHexString('#00487B');
         });
@@ -136,13 +136,8 @@ export class HomePage {
         }).addTo(this.map);
     }
 
-    getTime (unixTime: number): string {
-        const date = new Date(unixTime * 1000);
-        const hours = date.getHours();
-        const minutes = '0' + date.getMinutes();
-        const seconds = '0' + date.getSeconds();
-
-        return `${hours}:${minutes.substr(-2)}:${seconds.substr(-2)}`;
+    getTime (value) {
+        return getTime(value);
     }
 
 }
