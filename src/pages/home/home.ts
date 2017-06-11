@@ -4,7 +4,7 @@ import {StatusBar} from '@ionic-native/status-bar'
 
 import {LocationTracker, Waypoint} from '../../providers/location-tracker'
 import * as Leaflet from 'leaflet'
-import config from '../../config'
+import {Map} from 'leaflet'
 
 @Component({
     selector: 'page-home',
@@ -17,6 +17,7 @@ export class HomePage {
 
     public isTracking: boolean = false
     public waypoints: Array<Waypoint> = []
+    public leaflet: Map
 
     constructor (public navCtrl: NavController,
                  private platform: Platform,
@@ -61,21 +62,19 @@ export class HomePage {
         this.stopTracking();
     }
 
-    updatePosition (lat: number, lng: number) {
-        console.log('Updating position to', lat, lng);
+    updatePosition (lat: number, lng: number, zoom?: number) {
+        this.map.setView([lat, lng], zoom)
     }
 
     loadMap () {
-        const mymap = Leaflet.map('map').setView([51.505, -0.09], 13);
+        this.map = Leaflet.map('map');
         
         Leaflet.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-            maxZoom: 18,
-            id: config.id,
-            accessToken: config.accessToken
-        }).addTo(mymap);
+            maxZoom: 18
+        }).addTo(this.map);
 
-        this.updatePosition(47.0272, 8.4436223)
+        this.updatePosition(47.0272, 8.4436223, 17)
     }
 
     getTime(unixTime: number): string {
