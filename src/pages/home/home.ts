@@ -1,10 +1,9 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component} from '@angular/core';
 import {NavController, Platform} from 'ionic-angular';
 import {StatusBar} from '@ionic-native/status-bar';
 
 import {LocationTracker, Waypoint} from '../../providers/location-tracker';
 import * as Leaflet from 'leaflet';
-import {Map} from 'leaflet';
 
 @Component({
     selector: 'page-home',
@@ -13,11 +12,12 @@ import {Map} from 'leaflet';
 
 export class HomePage {
 
-    @ViewChild('map') map;
-
     public isTracking: boolean = false;
     public waypoints: Array<Waypoint> = [];
-    public leaflet: Map;
+    public map;
+    public positionMarker;
+    public positionMarkerRadius;
+    public path;
 
     constructor (public navCtrl: NavController,
                  private platform: Platform,
@@ -33,8 +33,8 @@ export class HomePage {
     init () {
         this.loadMap();
         this.locationTracker.watchPosition();
-        this.locationTracker.onPositionUpdate((lat, lng, waypoints) => {
-            this.updatePosition(lat, lng);
+        this.locationTracker.onPositionUpdate((waypoint, waypoints) => {
+            this.updatePosition(waypoint);
             this.waypoints = waypoints;
         });
     }
@@ -50,6 +50,7 @@ export class HomePage {
     startTracking () {
         this.isTracking = true;
         this.waypoints = [];
+        this.addPath();
         this.locationTracker.startTracking();
     }
 
@@ -62,19 +63,64 @@ export class HomePage {
         this.stopTracking();
     }
 
-    updatePosition (lat: number, lng: number, zoom?: number) {
-        this.map.setView([lat, lng], zoom);
+    updatePosition (waypoint: Waypoint) {
+        this.map.setView([waypoint.latitude, waypoint.longitude]);
+
+        const radius = waypoint.accuracy / 2;
+
+        if (!this.positionMarker) {
+            this.addPositionMarker(waypoint, radius);
+        } else {
+            this.movePositionMarker(waypoint, radius);
+        }
+    }
+
+    protected addPositionMarker (waypoint: Waypoint, radius: number) {
+        this.positionMarker = Leaflet.circleMarker({
+            lat: waypoint.latitude, lng: waypoint.longitude
+        }, {radius: 1, weight: 3}).addTo(this.map);
+        this.positionMarkerRadius = Leaflet.circleMarker({
+            lat: waypoint.latitude, lng: waypoint.longitude
+        }, {radius, weight: 1, opacity: .6}).addTo(this.map);
+    }
+
+    protected movePositionMarker (waypoint: Waypoint, radius: number) {
+        this.positionMarker.setLatLng({
+            lat: waypoint.latitude, lng: waypoint.longitude
+        });
+        this.positionMarkerRadius.setLatLng({
+            lat: waypoint.latitude, lng: waypoint.longitude
+        }).setRadius(radius);
+
+        this.drawPath(waypoint);
+    }
+
+    protected addPath () {
+        if (this.path) {
+            this.path.remove();
+            this.path = null;
+        }
+
+        const position = this.locationTracker.getCurrentPosition();
+        this.path = new Leaflet.Polyline([
+            {lat: position.latitude, lng: position.longitude}
+        ]).addTo(this.map);
+    }
+
+    protected drawPath (waypoint: Waypoint) {
+        if (!this.isTracking) return;
+
+        this.path.addLatLng({lat: waypoint.latitude, lng: waypoint.longitude});
     }
 
     loadMap () {
         this.map = Leaflet.map('map');
+        this.map.setView([47.0272, 8.4436223], 17);
 
         Leaflet.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
             maxZoom: 18
         }).addTo(this.map);
-
-        this.updatePosition(47.0272, 8.4436223, 17);
     }
 
     getTime (unixTime: number): string {

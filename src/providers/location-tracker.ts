@@ -3,7 +3,7 @@ import 'rxjs/add/operator/map';
 // import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
 import {Geolocation, Geoposition} from '@ionic-native/geolocation';
 
-type Callback = (lat: number, lng: number, waypoints?: Array<Waypoint>) => any;
+type Callback = (waypoint: Waypoint, waypoints?: Array<Waypoint>) => any;
 
 export interface Waypoint extends Coordinates {
     timestamp: number;
@@ -51,7 +51,6 @@ export class LocationTracker {
 
         this.watch = this.geolocation.watchPosition(options)
             .subscribe((position: Geoposition) => {
-                console.log(position);
                 this.zone.run(() => this.updatePosition(position.coords));
             });
     }
@@ -82,7 +81,7 @@ export class LocationTracker {
             console.log('recording', this.waypoints);
         }
 
-        this.callbacks.forEach(c => c(this.lat, this.lng, this.waypoints));
+        this.callbacks.forEach(c => c(waypoint, this.waypoints));
     }
 
     startTracking () {
@@ -106,7 +105,7 @@ export class LocationTracker {
     }
 
     getCurrentPosition () {
-        return [this.lat, this.lng];
+        return {latitude: this.lat, longitude: this.lng};
     }
 
 }
