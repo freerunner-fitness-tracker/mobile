@@ -1,12 +1,12 @@
-import {Injectable, NgZone} from '@angular/core'
-import 'rxjs/add/operator/map'
+import {Injectable, NgZone} from '@angular/core';
+import 'rxjs/add/operator/map';
 // import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
-import {Geolocation, Geoposition} from '@ionic-native/geolocation'
+import {Geolocation, Geoposition} from '@ionic-native/geolocation';
 
-type Callback = (lat: number, lng: number, waypoints?: Array<Waypoint>) => any
+type Callback = (lat: number, lng: number, waypoints?: Array<Waypoint>) => any;
 
 export interface Waypoint extends Coordinates {
-    timestamp: number
+    timestamp: number;
 }
 
 @Injectable()
@@ -15,18 +15,19 @@ export class LocationTracker {
     public watch: any;
     public lat: number = 0;
     public lng: number = 0;
+
     public callbacks: Array<Callback> = [];
-    public record: boolean = false;
+    public isTracking: boolean = false;
     public hasSignal: boolean = false;
     public waypoints: Array<Waypoint> = [];
 
-    constructor(public zone: NgZone,
-                private geolocation: Geolocation,
-                //             private backgroundGeolocation: BackgroundGeolocation
+    constructor (public zone: NgZone,
+                 private geolocation: Geolocation
+                 //             private backgroundGeolocation: BackgroundGeolocation
     ) {
     }
 
-    startTracking() {
+    watchPosition () {
         // const config = {
         //     desiredAccuracy: 0,
         //     stationaryRadius: 20,
@@ -55,10 +56,9 @@ export class LocationTracker {
             });
     }
 
-    updatePosition(coords) {
-
+    updatePosition (coords) {
         if (coords === undefined) {
-            return this.hasSignal = false
+            return this.hasSignal = false;
         }
 
         this.hasSignal = true;
@@ -77,36 +77,36 @@ export class LocationTracker {
             timestamp: Math.ceil(+Date.now() / 1000)
         };
 
-        if (this.record) {
+        if (this.isTracking) {
             this.waypoints.push(waypoint);
             console.log('recording', this.waypoints);
         }
 
-        this.callbacks.forEach(c => c(this.lat, this.lng, this.waypoints))
+        this.callbacks.forEach(c => c(this.lat, this.lng, this.waypoints));
     }
 
-    startRecording() {
+    startTracking () {
         this.waypoints = [];
-        this.record = true
+        this.isTracking = true;
     }
 
-    stopRecording() {
-        this.record = false
-        return this.waypoints
+    stopTracking () {
+        this.isTracking = false;
+        return this.waypoints;
     }
 
-    onPositionUpdate(callback: Callback) {
-        this.callbacks.push(callback)
+    onPositionUpdate (callback: Callback) {
+        this.callbacks.push(callback);
     }
 
-    stopTracking() {
-        console.log('stopTracking');
+    unwatchPosition () {
+        console.log('unwatchPosition');
         // this.backgroundGeolocation.finish();
         this.watch.unsubscribe();
     }
 
-    getCurrentPosition() {
-        return [this.lat, this.lng]
+    getCurrentPosition () {
+        return [this.lat, this.lng];
     }
 
 }

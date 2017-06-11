@@ -41,6 +41,7 @@
     "leaflet": "^1.0.3",
     "rxjs": "5.1.1",
     "sw-toolbox": "3.6.0",
+    "tslint": "^5.4.3",
     "zone.js": "0.8.11"
   },
   "devDependencies": {
