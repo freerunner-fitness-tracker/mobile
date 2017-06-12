@@ -45,7 +45,7 @@ export class LocationTracker {
         // this.backgroundGeolocation.start();
 
         const options = {
-            frequency: 3000,
+            maximumAge: 0,
             enableHighAccuracy: true
         };
 

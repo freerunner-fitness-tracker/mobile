@@ -117,7 +117,7 @@ export class HomePage {
         const position = this.locationTracker.getCurrentPosition();
         this.path = new Leaflet.Polyline([
             {lat: position.latitude, lng: position.longitude}
-        ]).addTo(this.map);
+        ], {smoothFactor: 5}).addTo(this.map);
     }
 
     protected drawPath (waypoint: Waypoint) {
