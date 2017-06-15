@@ -18,6 +18,11 @@ page-home {
         background: #fff;
         box-shadow: $floating-elements-box-shadow;
         margin-bottom: $content-padding;
+        transform: translate3d(-95%, 0, 0);
+        transition: .1s ease-out transform;
+        &--visible {
+            transform: translate3d(0, 0, 0);
+        }
         .entry {
             padding: 5px;
             font-size: 10px;

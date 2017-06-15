@@ -8,9 +8,11 @@
 </ion-header>
 
 <ion-content padding>
-    <div #map id="map"></div>
+    <div id="map"></div>
     <div class="content-overlay">
-        <div class="waypoint-log">
+        <div class="waypoint-log"
+             [class.waypoint-log--visible]="showWaypointLog"
+             (click)="showWaypointLog = !showWaypointLog">
             <div class="entry" *ngFor="let waypoint of waypoints; let i=index">
                 <div class="entry__index">
                     {{ i }}
@@ -55,8 +57,8 @@
             </div>
         </div>
 
+        <!--[disabled]="!locationTracker.hasSignal"-->
         <button ion-button [color]="isTracking ? 'danger' : 'secondary'"
-                [disabled]="!locationTracker.hasSignal"
                 large block id="start-tracking"
                 (click)="toggleTracking()">
             {{ isTracking ? 'Stop tracking' : 'Start tracking' }}

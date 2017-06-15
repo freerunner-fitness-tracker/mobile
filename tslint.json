@@ -1,11 +1,13 @@
 {
   "rules": {
     "no-duplicate-variable": true,
+    "semicolon": [true, "always"],
+    "indent": [true, "spaces", 4],
+    "space-before-function-paren": [true, "always"],
+    "no-consecutive-blank-lines": true,
+    "prefer-const": true,
     "no-unused-variable": [
       true
     ]
-  },
-  "rulesDirectory": [
-    "node_modules/tslint-eslint-rules/dist/rules"
-  ]
+  }
 }
