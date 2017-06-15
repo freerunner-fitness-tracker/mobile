@@ -45,7 +45,7 @@ export class LocationTracker {
         // this.backgroundGeolocation.start();
 
         const options = {
-            maximumAge: 0,
+            maximumAge: 3000,
             enableHighAccuracy: true
         };
 
