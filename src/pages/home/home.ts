@@ -17,17 +17,18 @@ export class HomePage {
     public isTracking: boolean = false;
     public startedAt: number;
     public waypoints: Array<Waypoint> = [];
-    public showWaypointLog: boolean = true
+    public showWaypointLog: boolean = true;
     public map;
     public positionMarker;
     public positionMarkerRadius;
     public path;
 
-    constructor (public navCtrl: NavController,
-                 private platform: Platform,
-                 private statusBar: StatusBar,
-                 private activitiesStore: ActivitiesStore,
-                 private locationTracker: LocationTracker) {
+
+    constructor(public navCtrl: NavController,
+                private platform: Platform,
+                private statusBar: StatusBar,
+                private activitiesStore: ActivitiesStore,
+                private locationTracker: LocationTracker) {
         platform.ready().then(() => {
             this.init();
             this.statusBar.overlaysWebView(true);
@@ -35,7 +36,7 @@ export class HomePage {
         });
     }
 
-    init () {
+    init() {
         this.loadMap();
         this.locationTracker.watchPosition();
         this.locationTracker.onPositionUpdate((waypoint, waypoints) => {
@@ -44,7 +45,7 @@ export class HomePage {
         });
     }
 
-    toggleTracking () {
+    toggleTracking() {
         if (this.isTracking) {
             this.stopTracking();
         } else {
@@ -52,7 +53,7 @@ export class HomePage {
         }
     }
 
-    startTracking () {
+    startTracking() {
         this.isTracking = true;
         this.startedAt = unixTime();
         this.waypoints = [];
@@ -60,7 +61,7 @@ export class HomePage {
         this.locationTracker.startTracking();
     }
 
-    async stopTracking () {
+    async stopTracking() {
         this.isTracking = false;
         this.waypoints = this.locationTracker.stopTracking();
         const activity: Activity = {
@@ -72,11 +73,11 @@ export class HomePage {
         console.log('has', recorded);
     }
 
-    ionViewWillLeave () {
+    ionViewWillLeave() {
         this.stopTracking();
     }
 
-    updatePosition (waypoint: Waypoint) {
+    updatePosition(waypoint: Waypoint) {
         this.map.setView([waypoint.latitude, waypoint.longitude]);
 
         const radius = waypoint.accuracy / 2;
@@ -88,7 +89,7 @@ export class HomePage {
         }
     }
 
-    protected addPositionMarker (waypoint: Waypoint, radius: number) {
+    protected addPositionMarker(waypoint: Waypoint, radius: number) {
         this.positionMarker = Leaflet.circleMarker({
             lat: waypoint.latitude, lng: waypoint.longitude
         }, {radius: 1, weight: 3}).addTo(this.map);
@@ -97,7 +98,7 @@ export class HomePage {
         }, {radius, weight: 1, opacity: .6}).addTo(this.map);
     }
 
-    protected movePositionMarker (waypoint: Waypoint, radius: number) {
+    protected movePositionMarker(waypoint: Waypoint, radius: number) {
         this.positionMarker.setLatLng({
             lat: waypoint.latitude, lng: waypoint.longitude
         });
@@ -108,7 +109,7 @@ export class HomePage {
         this.drawPath(waypoint);
     }
 
-    protected addPath () {
+    protected addPath() {
         if (this.path) {
             this.path.remove();
             this.path = null;
@@ -120,13 +121,13 @@ export class HomePage {
         ], {smoothFactor: 5}).addTo(this.map);
     }
 
-    protected drawPath (waypoint: Waypoint) {
+    protected drawPath(waypoint: Waypoint) {
         if (!this.isTracking) return;
 
         this.path.addLatLng({lat: waypoint.latitude, lng: waypoint.longitude});
     }
 
-    loadMap () {
+    loadMap() {
         this.map = Leaflet.map('map');
         this.map.setView([47.0272, 8.4436223], 17);
 
@@ -136,7 +137,7 @@ export class HomePage {
         }).addTo(this.map);
     }
 
-    getTime (value) {
+    getTime(value) {
         return getTime(value);
     }
 
