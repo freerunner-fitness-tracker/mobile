@@ -81,21 +81,21 @@ export class LocationTracker {
 
         if (this.isTracking) {
             if (this.waypoints.length > 0) {
-                const distance = this.distanceInMBetweenEarthCoordinates(coords, this.waypoints[this.waypoints.length-1]);
-                this.distance =  this.distance + distance;
+                this.distance += this.distanceInMBetweenEarthCoordinates(
+                    coords,
+                    this.waypoints[this.waypoints.length - 1]
+                );
             }
             this.waypoints.push(waypoint);
-            console.log('recording', this.waypoints);
-            console.log('distance', this.distance, ' m');
         }
         this.callbacks.forEach(c => c(waypoint, this.waypoints));
     }
 
-    degreesToRadians(degrees) {
+    degreesToRadians (degrees) {
         return degrees * Math.PI / 180;
     }
 
-    distanceInMBetweenEarthCoordinates(waypoint1:Waypoint, waypoint2:Waypoint):number {
+    distanceInMBetweenEarthCoordinates (waypoint1: Waypoint, waypoint2: Waypoint): number {
         let lat1 = waypoint1.latitude;
         const lon1 = waypoint1.longitude;
         let lat2 = waypoint2.latitude;
@@ -109,14 +109,15 @@ export class LocationTracker {
         lat1 = this.degreesToRadians(lat1);
         lat2 = this.degreesToRadians(lat2);
 
-        let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
             Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return parseFloat((earthRadiusM * c).toFixed(2));
     }
 
     startTracking () {
         this.waypoints = [];
+        this.distance = 0;
         this.isTracking = true;
         this.updatePosition(this.getCurrentPosition());
     }
@@ -138,6 +139,11 @@ export class LocationTracker {
 
     getCurrentPosition () {
         return {latitude: this.lat, longitude: this.lng, accuracy: this.accuracy};
+    }
+
+    get distanceInKm () {
+        console.log('dist');
+        return (this.distance / 1000).toFixed(2);
     }
 
 }
