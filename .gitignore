@@ -33,5 +33,4 @@ $RECYCLE.BIN/
 Thumbs.db
 UserInterfaceState.xcuserstate
 
-config.xml
 src/config.ts
