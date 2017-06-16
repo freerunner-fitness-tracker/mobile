@@ -15,6 +15,8 @@ export class LocationTracker {
     public watch: any;
     public lat: number = 0;
     public lng: number = 0;
+    public accuracy: number = 0;
+    public distance: number = 0;
 
     public callbacks: Array<Callback> = [];
     public isTracking: boolean = false;
@@ -64,6 +66,7 @@ export class LocationTracker {
 
         this.lat = coords.latitude;
         this.lng = coords.longitude;
+        this.accuracy = coords.accuracy;
 
         const waypoint: Waypoint = {
             latitude: coords.latitude,
@@ -77,16 +80,45 @@ export class LocationTracker {
         };
 
         if (this.isTracking) {
+            if (this.waypoints.length > 0) {
+                const distance = this.distanceInMBetweenEarthCoordinates(coords, this.waypoints[this.waypoints.length-1]);
+                this.distance =  this.distance + distance;
+            }
             this.waypoints.push(waypoint);
             console.log('recording', this.waypoints);
+            console.log('distance', this.distance, ' m');
         }
-
         this.callbacks.forEach(c => c(waypoint, this.waypoints));
+    }
+
+    degreesToRadians(degrees) {
+        return degrees * Math.PI / 180;
+    }
+
+    distanceInMBetweenEarthCoordinates(waypoint1:Waypoint, waypoint2:Waypoint):number {
+        let lat1 = waypoint1.latitude;
+        const lon1 = waypoint1.longitude;
+        let lat2 = waypoint2.latitude;
+        const lon2 = waypoint2.longitude;
+
+        const earthRadiusM = 6371 * 1000;
+
+        const dLat = this.degreesToRadians(lat2 - lat1);
+        const dLon = this.degreesToRadians(lon2 - lon1);
+
+        lat1 = this.degreesToRadians(lat1);
+        lat2 = this.degreesToRadians(lat2);
+
+        let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return parseFloat((earthRadiusM * c).toFixed(2));
     }
 
     startTracking () {
         this.waypoints = [];
         this.isTracking = true;
+        this.updatePosition(this.getCurrentPosition());
     }
 
     stopTracking () {
@@ -105,7 +137,7 @@ export class LocationTracker {
     }
 
     getCurrentPosition () {
-        return {latitude: this.lat, longitude: this.lng};
+        return {latitude: this.lat, longitude: this.lng, accuracy: this.accuracy};
     }
 
 }
