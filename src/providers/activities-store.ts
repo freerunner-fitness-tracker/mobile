@@ -7,6 +7,7 @@ import {Platform} from 'ionic-angular';
 export interface Activity {
     start: number;
     end: number;
+    distance: number;
     waypoints: Array<Waypoint>;
 }
 
@@ -28,7 +29,7 @@ export class ActivitiesStore {
                 name: 'data.db',
                 location: 'default'
             });
-            return await this.database.executeSql('CREATE TABLE IF NOT EXISTS activities(id VARCHAR PRIMARY KEY, start INT NOT NULL, end INT NOT NULL, waypoints TEXT NOT NULL);', {});
+            return await this.database.executeSql('CREATE TABLE IF NOT EXISTS activities(id VARCHAR PRIMARY KEY, start INT NOT NULL, end INT NOT NULL, distance INT NOT NULL, waypoints TEXT NOT NULL);', {});
         } catch (e) {
             console.log(e);
             return;
@@ -37,10 +38,11 @@ export class ActivitiesStore {
 
     public async addActivity (activity?: Activity) {
         const uuid = UUID.UUID();
-        await this.database.executeSql('INSERT INTO activities (id, start, end, waypoints) VALUES (?, ?, ?, ?)', [
+        await this.database.executeSql('INSERT INTO activities (id, start, end, distance, waypoints) VALUES (?, ?, ?, ?, ?)', [
             uuid,
             activity.start,
             activity.end,
+            activity.distance,
             JSON.stringify(activity.waypoints)
         ]);
 
@@ -59,7 +61,7 @@ export class ActivitiesStore {
         const activities = [];
         if (data.rows.length > 0) {
             for (let i = 0; i < data.rows.length; i++) {
-                const item = data.rows.item(i)
+                const item = data.rows.item(i);
                 activities.push({
                     ...item,
                     waypoints: JSON.parse(item.waypoints)
