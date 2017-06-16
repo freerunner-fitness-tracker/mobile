@@ -1,5 +1,6 @@
 page-home {
     $floating-elements-box-shadow: 0 3px 3px rgba(0, 0, 0, .15);
+    $transition: .2s ease-out;
     .content-overlay {
         position: fixed;
         padding: $content-padding;
@@ -7,12 +8,9 @@ page-home {
         bottom: 0;
         left: 0;
         z-index: 1000;
-    }
-    #start-tracking {
-        margin: 0;
-        text-transform: uppercase;
-        font-weight: 500;
-        box-shadow: $floating-elements-box-shadow
+        transform: translate3d(0, -56px, 0);
+        transition: $transition;
+        transition-property: transform;
     }
     .waypoint-log {
         background: #fff;
@@ -20,6 +18,8 @@ page-home {
         margin-bottom: $content-padding;
         transform: translate3d(-95%, 0, 0);
         transition: .1s ease-out transform;
+        max-height: 90px;
+        overflow: auto;
         &--visible {
             transform: translate3d(0, 0, 0);
         }
@@ -38,6 +38,51 @@ page-home {
             }
         }
     }
+    #start-tracking {
+        margin: 0;
+        text-transform: uppercase;
+        font-weight: 500;
+        box-shadow: $floating-elements-box-shadow;
+        position: absolute;
+        width: calc(100% - (#{$content-padding} * 2));
+        bottom: $content-padding;
+        z-index: 1050;
+        transition: $transition;
+        transform: translate3d(0, 0, 0);
+        transition-property: transform, border-radius, width, height;
+        will-change: height, width, transform, border-radius;
+    }
+    .activity-display {
+        background: #fff;
+        box-shadow: $floating-elements-box-shadow;
+        margin-bottom: $content-padding;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        transition: $transition;
+        transition-property: opacity, transform;
+        transform: scale(.9);
+        .row {
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+        .box {
+            flex: 1;
+            text-align: center;
+            padding: 1.25em .5em;
+            &:first-child {
+                border-right: 1px solid #eee;
+            }
+        }
+        .label {
+            color: color($colors, grey);
+            margin-bottom: .75em;
+        }
+        .value {
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+    }
     .infopanel {
         display: flex;
         color: color($colors, grey);
@@ -47,9 +92,32 @@ page-home {
         padding: 6px 12px;
         border-radius: 16px;
         font-size: 12px;
+        opacity: 1;
+        transition: $transition;
+        transition-property: opacity, transform;
+        transform: scale(1);
         & > div {
             flex: auto;
             align-items: center;
+        }
+    }
+    .is-tracking {
+        .content-overlay {
+            transform: translate3d(0, 60px, 0);
+        }
+        #start-tracking {
+            transform: translate3d(calc(50vw - 50% - #{$content-padding}), -56px, 0);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+        }
+        .activity-display {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .infopanel {
+            opacity: 0;
+            transform: scale(.9);
         }
     }
     .signal, .position {
