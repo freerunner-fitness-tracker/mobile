@@ -140,4 +140,9 @@ export class LocationTracker {
         return {latitude: this.lat, longitude: this.lng, accuracy: this.accuracy};
     }
 
+    get distanceInKm () {
+        console.log('dist')
+        return (this.distance / 1000).toFixed(2);
+    }
+
 }
