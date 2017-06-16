@@ -70,7 +70,6 @@ export class HomePage {
             waypoints: this.waypoints
         };
         const recorded = await this.activitiesStore.addActivity(activity);
-        console.log('has', recorded);
     }
 
     ionViewWillLeave() {

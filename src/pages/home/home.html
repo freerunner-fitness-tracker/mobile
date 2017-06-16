@@ -7,24 +7,47 @@
     </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding [class.is-tracking]="isTracking">
     <div id="map"></div>
+
+    <div class="waypoint-log"
+         [class.waypoint-log--visible]="showWaypointLog"
+         (click)="showWaypointLog = !showWaypointLog">
+        <div class="entry" *ngFor="let waypoint of waypoints.slice(-3); let i = index">
+            <div class="entry__index">
+                {{ i + waypoints.length - 3 }}
+            </div>
+            <div class="entry__data">
+                N {{ waypoint.latitude }} /
+                E {{ waypoint.longitude }} /
+                Acc {{ waypoint.accuracy }} /
+                Speed {{ waypoint.speed }} /
+                Alt {{ waypoint.altitude }} /
+                TS {{ getTime(waypoint.timestamp) }}
+            </div>
+        </div>
+    </div>
+
     <div class="content-overlay">
-        <div class="waypoint-log"
-             [class.waypoint-log--visible]="showWaypointLog"
-             (click)="showWaypointLog = !showWaypointLog">
-            <div class="entry" *ngFor="let waypoint of waypoints; let i=index">
-                <div class="entry__index">
-                    {{ i }}
+        <div class="activity-display">
+            <div class="row">
+                <div class="box">
+                    <div class="label">Time</div>
+                    <div class="value">09:20</div>
                 </div>
-                <div class="entry__data">
-                    D {{ locationTracker.distance }} /
-                    N {{ waypoint.latitude }} /
-                    E {{ waypoint.longitude }} /
-                    Acc {{ waypoint.accuracy }} /
-                    Speed {{ waypoint.speed }} /
-                    Alt {{ waypoint.altitude }} /
-                    TS {{ getTime(waypoint.timestamp) }}
+                <div class="box">
+                    <div class="label">Distance</div>
+                    <div class="value">4.18</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="box">
+                    <div class="label">Current pace</div>
+                    <div class="value">05:45</div>
+                </div>
+                <div class="box">
+                    <div class="label">Avg. pace</div>
+                    <div class="value">6:12</div>
                 </div>
             </div>
         </div>
@@ -57,12 +80,17 @@
                 </div>
             </div>
         </div>
-
-        <!--[disabled]="!locationTracker.hasSignal"-->
-        <button ion-button [color]="isTracking ? 'danger' : 'secondary'"
-                large block id="start-tracking"
-                (click)="toggleTracking()">
-            {{ isTracking ? 'Stop tracking' : 'Start tracking' }}
-        </button>
     </div>
+
+    <!--[disabled]="!locationTracker.hasSignal"-->
+    <button ion-button [color]="isTracking ? 'danger' : 'secondary'"
+            large block id="start-tracking"
+            (click)="toggleTracking()">
+        <span class="is-tracking" *ngIf="isTracking">
+            <img src="assets/images/icon-pause.png"
+                 srcset="assets/images/icon-pause.png 1x, assets/images/icon-pause@2x.png 2x"
+                 alt=""/>
+        </span>
+        <span class="start-tracking" *ngIf="!isTracking">Start tracking</span>
+    </button>
 </ion-content>
