@@ -1,18 +1,9 @@
 import {Injectable} from '@angular/core';
 import {SQLite, SQLiteObject} from '@ionic-native/sqlite';
 import {File} from '@ionic-native/file';
-
-import {Waypoint} from './location-tracker';
 import {UUID} from 'angular2-uuid';
 import {Platform} from 'ionic-angular';
-
-export interface Activity {
-    id?: UUID;
-    start: number;
-    end: number;
-    distance: number;
-    waypoints: Array<Waypoint>;
-}
+import {ActivityModel} from '../components/activity/activity-model';
 
 @Injectable()
 export class ActivitiesStore {
@@ -43,7 +34,7 @@ export class ActivitiesStore {
         }
     }
 
-    public async addActivity (activity?: Activity) {
+    public async addActivity (activity?: ActivityModel) {
         activity.id = UUID.UUID();
 
         await Promise.all([
@@ -54,7 +45,7 @@ export class ActivitiesStore {
         return this.getActivities();
     }
 
-    protected async saveToDatabase (activity: Activity) {
+    protected async saveToDatabase (activity: ActivityModel) {
         return this.database.executeSql(
             'INSERT INTO activities (id, start, end, distance, duration, type) VALUES (?, ?, ?, ?, ?, ?)', [
                 activity.id,
@@ -66,7 +57,7 @@ export class ActivitiesStore {
             ]);
     }
 
-    protected async saveToFile (activity: Activity) {
+    protected async saveToFile (activity: ActivityModel) {
         return this.file.writeFile(
             this.storagePath, this.filename(activity), JSON.stringify(activity.waypoints), {
                 replace: true,
@@ -74,11 +65,11 @@ export class ActivitiesStore {
             });
     }
 
-    protected filename (activity: Activity): string {
+    protected filename (activity: ActivityModel): string {
         return `${activity.id}.json`;
     }
 
-    public async getActivities (): Promise<Array<Activity>> {
+    public async getActivities (): Promise<Array<ActivityModel>> {
         let data;
         try {
             data = await this.database.executeSql('SELECT * FROM activities ORDER BY end DESC', []);
@@ -91,14 +82,32 @@ export class ActivitiesStore {
         if (data.rows.length > 0) {
             for (let i = 0; i < data.rows.length; i++) {
                 const item = data.rows.item(i);
-                const waypoints = await this.file.readAsText(this.storagePath, this.filename(item));
-                activities.push({
-                    ...item,
-                    waypoints: JSON.parse(waypoints)
-                });
+                activities.push(await this.hydrate(item));
             }
         }
         return activities;
+    }
+
+    public async getActivity (id: UUID): Promise<ActivityModel> {
+        let data;
+        try {
+            data = await this.database.executeSql('SELECT * FROM activities WHERE id = ?', [id]);
+        } catch (e) {
+            console.log(e);
+            throw new Error(e);
+        }
+
+        return this.hydrate(data.rows.item(0));
+    }
+
+    protected async hydrate (activity: ActivityModel): Promise<ActivityModel> {
+        const waypoints = await this.file.readAsText(this.storagePath, this.filename(activity));
+        return new Promise<ActivityModel>((resolve) => {
+            resolve(ActivityModel.fromObject({
+                ...activity,
+                waypoints: JSON.parse(waypoints)
+            }));
+        });
     }
 
     get storagePath () {

@@ -11,6 +11,7 @@ page-home {
         transform: translate3d(0, -56px, 0);
         transition: $transition;
         transition-property: transform;
+        pointer-events: none;
     }
     .waypoint-log {
         background: #fff;
@@ -48,7 +49,7 @@ page-home {
         bottom: $content-padding;
         z-index: 1050;
         transition: $transition;
-        transform: translate3d(0, 0, 0);
+        transform: translate3d($content-padding, 0, 0);
         transition-property: transform, border-radius, width, height;
         will-change: height, width, transform, border-radius;
     }
@@ -106,10 +107,14 @@ page-home {
             transform: translate3d(0, 60px, 0);
         }
         #start-tracking {
-            transform: translate3d(calc(50vw - 50% - #{$content-padding}), -56px, 0);
+            transform: translate3d(calc(50vw - 50%), -56px, 0);
             border-radius: 50%;
             width: 80px;
             height: 80px;
+            img {
+                display: block;
+                margin-top: 1px;
+            }
         }
         .activity-display {
             opacity: 1;
@@ -143,11 +148,5 @@ page-home {
         height: 100%;
         background: #ccc;
         z-index: 0;
-        .md & {
-            top: 56px;
-        }
-        .ios & {
-            top: 44px;
-        }
     }
 }

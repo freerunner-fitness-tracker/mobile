@@ -15,11 +15,17 @@ import {Geolocation} from '@ionic-native/geolocation';
 // import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
 import {LocationTracker} from '../providers/location-tracker';
 import {ActivitiesStore} from '../providers/activities-store';
+import {ActivityPage} from '../pages/activity/activity';
+import {ActivityCard} from '../components/activity/activity-card';
+import {ActivityMap} from '../components/activity/activity-map';
 
 @NgModule({
     declarations: [
         MyApp,
         HomePage,
+        ActivityPage,
+        ActivityCard,
+        ActivityMap,
         ListPage
     ],
     imports: [
@@ -30,6 +36,7 @@ import {ActivitiesStore} from '../providers/activities-store';
     entryComponents: [
         MyApp,
         HomePage,
+        ActivityPage,
         ListPage
     ],
     providers: [

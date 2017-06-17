@@ -3,18 +3,13 @@
         <button ion-button menuToggle>
             <ion-icon name="menu"></ion-icon>
         </button>
-        <ion-title>List</ion-title>
+        <ion-title>Your activities</ion-title>
     </ion-navbar>
 </ion-header>
 
 <ion-content>
-    <ion-list>
-        <button ion-item *ngFor="let item of items;">
-            <h2>{{ getDate(item.start) }}</h2>
-            <p>{{ item.waypoints.length }} waypoints / {{ (item.distance / 1000).toFixed(2) }} km</p>
-            <div class="item-note" item-right>
-                {{ getTime(item.start) }}&ndash;{{ getTime(item.end) }}
-            </div>
-        </button>
-    </ion-list>
+    <activity-card *ngFor="let item of items; let i = index"
+                   [activity]="item"
+                   [renderMap]="i < 3"
+    ></activity-card>
 </ion-content>

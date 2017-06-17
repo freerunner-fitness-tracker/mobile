@@ -7,8 +7,8 @@
     </ion-navbar>
 </ion-header>
 
-<ion-content padding [class.is-tracking]="isTracking">
-    <div id="map"></div>
+<ion-content [class.is-tracking]="isTracking">
+    <div #map id="map"></div>
 
     <div class="waypoint-log"
          [class.waypoint-log--visible]="showWaypointLog"
@@ -85,7 +85,7 @@
 
     <!--[disabled]="!locationTracker.hasSignal"-->
     <button ion-button [color]="isTracking ? 'danger' : 'secondary'"
-            large block id="start-tracking"
+            tappable large block id="start-tracking"
             (click)="toggleTracking()">
         <span class="is-tracking" *ngIf="isTracking">
             <img src="assets/images/icon-pause.png"

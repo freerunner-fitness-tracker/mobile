@@ -1,0 +1,43 @@
+<div class="activity-card">
+    <div class="activity-card__header">
+        <div class="activity-title">
+            <div class="activity-title__date">
+                {{ getDate(activity.start) }}
+            </div>
+            <div class="activity-title__time">
+                {{ getTime(activity.start) }}&ndash;{{ getTime(activity.end) }}
+            </div>
+        </div>
+        <div class="activity-like" [class.activity-like--liked]="false">
+            <img src="assets/images/icon-like.png"
+                 srcset="assets/images/icon-like.png 1x, assets/images/icon-like@2x.png 2x"
+                 alt=""/>
+        </div>
+    </div>
+    <div class="activity-card__map">
+        <activity-map #map
+                      [waypoints]="activity.waypoints"
+                      [renderMap]="renderMap"
+                      (click)="map.initMap()"
+                      tappable
+        ></activity-map>
+    </div>
+    <div class="activity-card__stats">
+        <div class="activity-stat">
+            <div class="value">{{ activity.distanceInKm }}</div>
+            <div class="label">km</div>
+        </div>
+        <div class="activity-stat">
+            <div class="value">{{ activity.durationAsTime }}</div>
+            <div class="label">Time</div>
+        </div>
+        <div class="activity-stat">
+            <div class="value">{{ activity.avgPace }}</div>
+            <div class="label">Avg. pace</div>
+        </div>
+        <div class="activity-stat">
+            <div class="value">{{ activity.calories }}</div>
+            <div class="label">Calories</div>
+        </div>
+    </div>
+</div>
