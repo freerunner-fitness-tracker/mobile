@@ -1,0 +1,69 @@
+activity-card {
+    .activity-card {
+        background: #fff;
+        &__header {
+            display: flex;
+            padding: $content-padding;
+        }
+        &__map {
+            position: relative;
+            background: #aaa;
+            height: 200px;
+            .scroll-guard {
+                z-index: 10000;
+                background: rgba(0, 0, 0, .2)
+            }
+            activity-map,
+            .scroll-guard {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1000;
+            }
+        }
+        &__stats {
+            display: flex;
+        }
+    }
+    .activity-title {
+        flex: 1;
+        &__date {
+            font-size: 1.3em;
+            line-height: 1.6;
+        }
+        &__time {
+            color: color($colors, grey);
+        }
+    }
+    .activity-like {
+        display: flex;
+        flex: 0 80px;
+        align-items: center;
+        justify-content: flex-end;
+        filter: grayscale(1);
+        opacity: .4;
+        &--liked {
+            filter: grayscale(0);
+            opacity: 1;
+        }
+    }
+    .activity-stat {
+        flex: 1;
+        text-align: center;
+        padding: .75em .5em;
+        .label {
+            font-size: .9em;
+            color: color($colors, grey);
+        }
+        .value {
+            font-weight: 500;
+            font-size: 1.6em;
+            line-height: 1.3;
+        }
+        &:not(:last-child) {
+            border-right: 1px solid #eee;
+        }
+    }
+}

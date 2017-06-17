@@ -4,7 +4,7 @@
     <description>OpenSource fitness tracker</description>
     <author email="verena.r@protonmail.com">Verena Röösli</author>
     <author email="tobias.kuendig@protonmail.com">Tobias Kündig</author>
-    <content original-src="index.html" src="http://192.168.192.41:8101" />
+    <content original-src="index.html" src="http://192.168.192.41:8100" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-navigation href="http://192.168.192.41:8100" />

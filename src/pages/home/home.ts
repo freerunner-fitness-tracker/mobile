@@ -1,11 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {NavController, Platform} from 'ionic-angular';
 import {StatusBar} from '@ionic-native/status-bar';
 
 import {LocationTracker, Waypoint} from '../../providers/location-tracker';
 import * as Leaflet from 'leaflet';
-import {ActivitiesStore, Activity} from '../../providers/activities-store';
+import {ActivitiesStore} from '../../providers/activities-store';
 import {getTime, unixTime} from '../../utils';
+import {ActivityModel} from '../../components/activity/activity-model';
 
 @Component({
     selector: 'page-home',
@@ -14,11 +15,13 @@ import {getTime, unixTime} from '../../utils';
 
 export class HomePage {
 
+    @ViewChild('map') map;
+
     public isTracking: boolean = false;
     public startedAt: number;
     public waypoints: Array<Waypoint> = [];
     public showWaypointLog: boolean = true;
-    public map;
+    public leaflet;
     public positionMarker;
     public positionMarkerRadius;
     public path;
@@ -44,7 +47,7 @@ export class HomePage {
         });
     }
 
-    toggleTracking () {
+    public toggleTracking () {
         if (this.isTracking) {
             this.stopTracking();
         } else {
@@ -52,7 +55,7 @@ export class HomePage {
         }
     }
 
-    startTracking () {
+    protected startTracking () {
         this.isTracking = true;
         this.startedAt = unixTime();
         this.waypoints = [];
@@ -60,24 +63,24 @@ export class HomePage {
         this.locationTracker.startTracking();
     }
 
-    async stopTracking () {
+    protected async stopTracking () {
         this.isTracking = false;
         this.waypoints = this.locationTracker.stopTracking();
-        const activity: Activity = {
-            start: this.startedAt,
-            end: unixTime(),
-            distance: this.locationTracker.distance,
-            waypoints: this.waypoints
-        };
+        const activity: ActivityModel = new ActivityModel(
+            this.startedAt,
+            unixTime(),
+            this.locationTracker.distance,
+            this.waypoints
+        );
         const recorded = await this.activitiesStore.addActivity(activity);
     }
 
-    ionViewWillLeave () {
-        this.stopTracking();
+    protected ionViewWillLeave () {
+        // this.stopTracking();
     }
 
-    updatePosition (waypoint: Waypoint) {
-        this.map.setView([waypoint.latitude, waypoint.longitude]);
+    protected updatePosition (waypoint: Waypoint) {
+        this.leaflet.setView([waypoint.latitude, waypoint.longitude]);
 
         const radius = waypoint.accuracy / 2;
 
@@ -91,10 +94,10 @@ export class HomePage {
     protected addPositionMarker (waypoint: Waypoint, radius: number) {
         this.positionMarker = Leaflet.circleMarker({
             lat: waypoint.latitude, lng: waypoint.longitude
-        }, {radius: 1, weight: 3}).addTo(this.map);
+        }, {radius: 4, weight: 2, fill: true, fillOpacity: 1, fillColor: '#ffffff'}).addTo(this.leaflet);
         this.positionMarkerRadius = Leaflet.circleMarker({
             lat: waypoint.latitude, lng: waypoint.longitude
-        }, {radius, weight: 1, opacity: .6}).addTo(this.map);
+        }, {radius, weight: 2, opacity: .6}).addTo(this.leaflet);
     }
 
     protected movePositionMarker (waypoint: Waypoint, radius: number) {
@@ -117,7 +120,7 @@ export class HomePage {
         const position = this.locationTracker.getCurrentPosition();
         this.path = new Leaflet.Polyline([
             {lat: position.latitude, lng: position.longitude}
-        ], {smoothFactor: 5}).addTo(this.map);
+        ], {smoothFactor: 5}).addTo(this.leaflet);
     }
 
     protected drawPath (waypoint: Waypoint) {
@@ -126,17 +129,17 @@ export class HomePage {
         this.path.addLatLng({lat: waypoint.latitude, lng: waypoint.longitude});
     }
 
-    loadMap () {
-        this.map = Leaflet.map('map');
-        this.map.setView([47.0272, 8.4436223], 17);
+    protected loadMap () {
+        this.leaflet = Leaflet.map(this.map.nativeElement, {
+            attributionControl: false,
+            zoomControl: false
+        });
+        this.leaflet.setView([47.0272, 8.4436223], 17);
 
-        Leaflet.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-            maxZoom: 18
-        }).addTo(this.map);
+        Leaflet.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18}).addTo(this.leaflet);
     }
 
-    getTime (value) {
+    public getTime (value) {
         return getTime(value);
     }
 

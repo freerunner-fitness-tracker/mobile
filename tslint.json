@@ -6,8 +6,7 @@
     "space-before-function-paren": [true, "always"],
     "no-consecutive-blank-lines": true,
     "prefer-const": true,
-    "no-unused-variable": [
-      true
-    ]
+    "member-access": true,
+    "no-unused-variable": true
   }
 }

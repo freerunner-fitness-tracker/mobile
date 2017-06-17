@@ -1,14 +1,17 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams, Platform} from 'ionic-angular';
-import {ActivitiesStore, Activity} from '../../providers/activities-store';
+import {ActivitiesStore} from '../../providers/activities-store';
 import {getDate, getTime} from '../../utils';
+import {ActivityPage} from '../activity/activity';
+import {UUID} from 'angular2-uuid';
+import {ActivityModel} from '../../components/activity/activity-model';
 
 @Component({
     selector: 'page-list',
     templateUrl: 'list.html'
 })
 export class ListPage {
-    items: Array<Activity>;
+    items: Array<ActivityModel>;
 
     constructor (public navCtrl: NavController,
                  public navParams: NavParams,
@@ -29,11 +32,7 @@ export class ListPage {
         this.items = items;
     }
 
-    public getTime (value) {
-        return getTime(value);
-    }
-
-    public getDate (value) {
-        return getDate(value);
+    goToActivity (id: UUID) {
+        this.navCtrl.push(ActivityPage, {id});
     }
 }

@@ -8,7 +8,7 @@ export const getTime = (unixTime: number) => {
     const minutes = `0${date.getMinutes()}`;
     const seconds = `0${date.getSeconds()}`;
 
-    return `${hours}:${minutes.substr(-2)}:${seconds.substr(-2)}`;
+    return `${hours}:${minutes.substr(-2)}`;
 };
 
 export const getDate = (unixTime: number) => {
@@ -18,4 +18,8 @@ export const getDate = (unixTime: number) => {
     const year = date.getFullYear();
 
     return `${year}-${month.substr(-2)}-${day.substr(-2)}`;
+};
+
+export const padLeft = (string: string | number, pad: string, length: number): string => {
+    return (new Array(length + 1).join(pad) + string).slice(-length);
 };
