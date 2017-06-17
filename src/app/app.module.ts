@@ -9,6 +9,7 @@ import {ListPage} from '../pages/list/list';
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
 import { SQLite } from '@ionic-native/sqlite';
+import { File } from '@ionic-native/file';
 
 import {Geolocation} from '@ionic-native/geolocation';
 // import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
@@ -38,6 +39,7 @@ import {ActivitiesStore} from '../providers/activities-store';
         // BackgroundGeolocation,
         LocationTracker,
         SQLite,
+        File,
         ActivitiesStore,
         {provide: ErrorHandler, useClass: IonicErrorHandler}
     ]

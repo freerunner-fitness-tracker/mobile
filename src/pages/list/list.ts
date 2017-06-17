@@ -20,7 +20,12 @@ export class ListPage {
     }
 
     async fetchActivites () {
-        const items = await this.activitiesStore.getActivities();
+        let items = [];
+        try {
+            items = await this.activitiesStore.getActivities();
+        } catch (e) {
+            console.log('Failed to fetch activities', JSON.stringify(e));
+        }
         this.items = items;
     }
 

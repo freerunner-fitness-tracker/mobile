@@ -142,7 +142,6 @@ export class LocationTracker {
     }
 
     get distanceInKm () {
-        console.log('dist');
         return (this.distance / 1000).toFixed(2);
     }
 
