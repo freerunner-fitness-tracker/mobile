@@ -23,7 +23,6 @@ export class HomePage {
     public positionMarkerRadius;
     public path;
 
-
     constructor (public navCtrl: NavController,
                  private platform: Platform,
                  private statusBar: StatusBar,
