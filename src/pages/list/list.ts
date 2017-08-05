@@ -11,7 +11,7 @@ import {ActivityModel} from '../../components/activity/activity-model';
     templateUrl: 'list.html'
 })
 export class ListPage {
-    items: Array<ActivityModel>;
+    public items: Array<ActivityModel>;
 
     constructor (public navCtrl: NavController,
                  public navParams: NavParams,
@@ -22,7 +22,7 @@ export class ListPage {
         });
     }
 
-    async fetchActivites () {
+    public async fetchActivites () {
         let items = [];
         try {
             items = await this.activitiesStore.getActivities();
@@ -32,7 +32,7 @@ export class ListPage {
         this.items = items;
     }
 
-    goToActivity (id: UUID) {
+    public goToActivity (id: UUID) {
         this.navCtrl.push(ActivityPage, {id});
     }
 }

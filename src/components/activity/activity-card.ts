@@ -9,8 +9,8 @@ import * as moment from 'moment';
     templateUrl: 'activity-card.html'
 })
 export class ActivityCard {
-    @Input() activity: ActivityModel;
-    @Input() renderMap: boolean = true;
+    @Input() public activity: ActivityModel;
+    @Input() public renderMap: boolean = true;
 
     constructor (private platform: Platform) {
     }

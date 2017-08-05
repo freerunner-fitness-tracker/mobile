@@ -9,7 +9,7 @@ export class ActivityModel {
                  public id?: UUID) {
     }
 
-    static fromObject (data) {
+    public static fromObject (data) {
         return new ActivityModel(data.start, data.end, data.distance, data.waypoints, data.id);
     }
 
@@ -32,6 +32,7 @@ export class ActivityModel {
     }
 
     get avgPace (): string {
-        return '-';
+        const pace = (this.durationInSeconds / 60) / parseFloat(this.distanceInKm);
+        return pace.toFixed(2);
     }
 }

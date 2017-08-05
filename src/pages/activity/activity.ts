@@ -9,7 +9,7 @@ import {ActivityModel} from '../../components/activity/activity-model';
     templateUrl: 'activity.html'
 })
 export class ActivityPage {
-    activity: ActivityModel;
+    public activity: ActivityModel;
 
     constructor (public navCtrl: NavController,
                  public navParams: NavParams,
@@ -20,7 +20,7 @@ export class ActivityPage {
         });
     }
 
-   async fetchActivity (id: UUID) {
+   public async fetchActivity (id: UUID) {
        try {
            this.activity = await this.activitiesStore.getActivity(id);
        } catch (e) {

@@ -4,9 +4,15 @@ import 'rxjs/add/operator/map';
 import {Geolocation, Geoposition} from '@ionic-native/geolocation';
 
 type Callback = (waypoint: Waypoint, waypoints?: Array<Waypoint>) => any;
+type WaypointMetaType = 'Flag';
+
+export interface WaypointMetaData {
+    type: WaypointMetaType;
+}
 
 export interface Waypoint extends Coordinates {
     timestamp: number;
+    meta?: WaypointMetaData;
 }
 
 @Injectable()
@@ -29,7 +35,7 @@ export class LocationTracker {
     ) {
     }
 
-    watchPosition () {
+    public watchPosition () {
         // const config = {
         //     desiredAccuracy: 0,
         //     stationaryRadius: 20,
@@ -57,7 +63,7 @@ export class LocationTracker {
             });
     }
 
-    updatePosition (coords) {
+    public updatePosition (coords) {
         if (coords === undefined) {
             return this.hasSignal = false;
         }
@@ -91,11 +97,11 @@ export class LocationTracker {
         this.callbacks.forEach(c => c(waypoint, this.waypoints));
     }
 
-    degreesToRadians (degrees) {
+    public degreesToRadians (degrees) {
         return degrees * Math.PI / 180;
     }
 
-    distanceInMBetweenEarthCoordinates (waypoint1: Waypoint, waypoint2: Waypoint): number {
+    public distanceInMBetweenEarthCoordinates (waypoint1: Waypoint, waypoint2: Waypoint): number {
         let lat1 = waypoint1.latitude;
         const lon1 = waypoint1.longitude;
         let lat2 = waypoint2.latitude;
@@ -115,29 +121,29 @@ export class LocationTracker {
         return parseFloat((earthRadiusM * c).toFixed(2));
     }
 
-    startTracking () {
+    public startTracking () {
         this.waypoints = [];
         this.distance = 0;
         this.isTracking = true;
         this.updatePosition(this.getCurrentPosition());
     }
 
-    stopTracking () {
+    public stopTracking () {
         this.isTracking = false;
         return this.waypoints;
     }
 
-    onPositionUpdate (callback: Callback) {
+    public onPositionUpdate (callback: Callback) {
         this.callbacks.push(callback);
     }
 
-    unwatchPosition () {
+    public unwatchPosition () {
         console.log('unwatchPosition');
         // this.backgroundGeolocation.finish();
         this.watch.unsubscribe();
     }
 
-    getCurrentPosition () {
+    public getCurrentPosition () {
         return {latitude: this.lat, longitude: this.lng, accuracy: this.accuracy};
     }
 
