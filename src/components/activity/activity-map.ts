@@ -20,6 +20,8 @@ export class ActivityMap {
     }
 
     public initMap () {
+        if (this.leaflet) return;
+        
         this.leaflet = Leaflet.map(this.map.nativeElement, {
             attributionControl: false,
             zoomControl: false

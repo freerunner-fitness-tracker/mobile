@@ -8,6 +8,7 @@
 </ion-header>
 
 <ion-content>
+    <ion-spinner *ngIf="isFetching"></ion-spinner>
     <activity-card *ngFor="let item of items; let i = index"
                    [activity]="item"
                    [renderMap]="i < 3"

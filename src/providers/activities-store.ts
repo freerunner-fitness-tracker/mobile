@@ -69,10 +69,10 @@ export class ActivitiesStore {
         return `${activity.id}.json`;
     }
 
-    public async getActivities (): Promise<Array<ActivityModel>> {
+    public async getActivities (count: number = 2, offset: number = 0): Promise<Array<ActivityModel>> {
         let data;
         try {
-            data = await this.database.executeSql('SELECT * FROM activities ORDER BY end DESC', []);
+            data = await this.database.executeSql(`SELECT * FROM activities ORDER BY end DESC LIMIT ${count} OFFSET ${offset}`, []);
         } catch (e) {
             console.log(e);
             return [];

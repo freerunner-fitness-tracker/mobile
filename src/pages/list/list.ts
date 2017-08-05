@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams, Platform} from 'ionic-angular';
 import {ActivitiesStore} from '../../providers/activities-store';
-import {getDate, getTime} from '../../utils';
 import {ActivityPage} from '../activity/activity';
 import {UUID} from 'angular2-uuid';
 import {ActivityModel} from '../../components/activity/activity-model';
@@ -12,22 +11,27 @@ import {ActivityModel} from '../../components/activity/activity-model';
 })
 export class ListPage {
     public items: Array<ActivityModel>;
+    public isFetching: boolean;
 
     constructor (public navCtrl: NavController,
                  public navParams: NavParams,
                  public activitiesStore: ActivitiesStore,
                  public platform: Platform) {
-        platform.ready().then(() => {
-            this.fetchActivites();
-        });
+    }
+
+    public ngOnInit () {
+        this.isFetching = true;
+        this.fetchActivites();
     }
 
     public async fetchActivites () {
         let items = [];
         try {
-            items = await this.activitiesStore.getActivities();
+            items = await this.activitiesStore.getActivities(10, 0);
         } catch (e) {
             console.log('Failed to fetch activities', JSON.stringify(e));
+        } finally {
+            this.isFetching = false;
         }
         this.items = items;
     }

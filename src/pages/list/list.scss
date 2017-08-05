@@ -3,4 +3,10 @@ page-list {
         display: block;
         border-bottom: 15px solid #eee;
     }
+    ion-spinner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
 }
