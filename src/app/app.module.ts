@@ -13,6 +13,7 @@ import { File } from '@ionic-native/file';
 
 import {Geolocation} from '@ionic-native/geolocation';
 // import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
+import {BackgroundMode} from '@ionic-native/background-mode';
 import {LocationTracker} from '../providers/location-tracker';
 import {ActivitiesStore} from '../providers/activities-store';
 import {ActivityPage} from '../pages/activity/activity';
@@ -44,6 +45,7 @@ import {ActivityMap} from '../components/activity/activity-map';
         SplashScreen,
         Geolocation,
         // BackgroundGeolocation,
+        BackgroundMode,
         LocationTracker,
         SQLite,
         File,
