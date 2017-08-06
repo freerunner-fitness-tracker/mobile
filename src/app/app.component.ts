@@ -11,16 +11,15 @@ import {BackgroundMode} from '@ionic-native/background-mode';
     templateUrl: 'app.html'
 })
 export class MyApp {
-    @ViewChild(Nav) nav: Nav;
+    @ViewChild(Nav) public nav: Nav;
 
-    rootPage: any = HomePage;
+    public rootPage: any = HomePage;
 
-    pages: Array<{ title: string, component: any }>;
+    public pages: Array<{ title: string, component: any }>;
 
     constructor (public platform: Platform,
                  public statusBar: StatusBar,
-                 public splashScreen: SplashScreen,
-                 private backgroundMode: BackgroundMode) {
+                 public splashScreen: SplashScreen) {
         this.initializeApp();
 
         // used for an example of ngFor and navigation
@@ -30,21 +29,16 @@ export class MyApp {
         ];
     }
 
-    initializeApp () {
+    public initializeApp () {
         this.platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
             // Here you can do any higher level native things you might need.
             this.statusBar.styleDefault();
             this.splashScreen.hide();
-            this.backgroundMode.enable();
-            this.backgroundMode.on('activate').subscribe(() => {
-                console.log('Background Mode has been activated');
-                this.backgroundMode.disableWebViewOptimizations();
-            });
         });
     }
 
-    openPage (page) {
+    public openPage (page) {
         // Reset the content nav to have just this page
         // we wouldn't want the back button to show in this scenario
         this.nav.setRoot(page.component);

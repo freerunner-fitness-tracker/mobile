@@ -2,6 +2,10 @@ import {Injectable, NgZone} from '@angular/core';
 import 'rxjs/add/operator/map';
 // import {BackgroundGeolocation} from '@ionic-native/background-geolocation'
 import {Geolocation, Geoposition} from '@ionic-native/geolocation';
+import {Observable} from 'rxjs/Observable';
+import {BackgroundMode} from '@ionic-native/background-mode';
+import {Subscription} from 'rxjs/Subscription';
+import {Platform} from 'ionic-angular';
 
 type Callback = (waypoint: Waypoint, waypoints?: Array<Waypoint>) => any;
 type WaypointMetaType = 'Flag';
@@ -23,6 +27,7 @@ export class LocationTracker {
     public lng: number = 0;
     public accuracy: number = 0;
     public distance: number = 0;
+    public backgroundModeSubscription: Subscription;
 
     public callbacks: Array<Callback> = [];
     public isTracking: boolean = false;
@@ -30,9 +35,16 @@ export class LocationTracker {
     public waypoints: Array<Waypoint> = [];
 
     constructor (public zone: NgZone,
-                 private geolocation: Geolocation
+                 private geolocation: Geolocation,
+                 private backgroundMode: BackgroundMode
                  //             private backgroundGeolocation: BackgroundGeolocation
     ) {
+        this.backgroundMode.setDefaults({
+            title: 'Activity in progress',
+            text: 'FreeRunner is tracking your activity',
+            color: '00487B',
+            icon: 'icon'
+        });
     }
 
     public watchPosition () {
@@ -126,10 +138,16 @@ export class LocationTracker {
         this.distance = 0;
         this.isTracking = true;
         this.updatePosition(this.getCurrentPosition());
+
+        this.backgroundMode.enable();
+        this.backgroundModeSubscription = this.backgroundMode.on('activate').subscribe(() => {
+            this.backgroundMode.disableWebViewOptimizations();
+        });
     }
 
     public stopTracking () {
         this.isTracking = false;
+        this.backgroundModeSubscription.unsubscribe();
         return this.waypoints;
     }
 
