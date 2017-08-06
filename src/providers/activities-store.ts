@@ -69,7 +69,7 @@ export class ActivitiesStore {
         return `${activity.id}.json`;
     }
 
-    public async getActivities (count: number = 2, offset: number = 0): Promise<Array<ActivityModel>> {
+    public async getActivities (count: number = 5, offset: number = 0): Promise<Array<ActivityModel>> {
         let data;
         try {
             data = await this.database.executeSql(`SELECT * FROM activities ORDER BY end DESC LIMIT ${count} OFFSET ${offset}`, []);
@@ -101,7 +101,13 @@ export class ActivitiesStore {
     }
 
     protected async hydrate (activity: ActivityModel): Promise<ActivityModel> {
-        const waypoints = await this.file.readAsText(this.storagePath, this.filename(activity));
+        let waypoints;
+        try {
+            waypoints = await this.file.readAsText(this.storagePath, this.filename(activity));
+        } catch(e) {
+            console.error('Failed to fetch waypoints for', activity);
+            waypoints = JSON.stringify([]);
+        }
         return new Promise<ActivityModel>((resolve) => {
             resolve(ActivityModel.fromObject({
                 ...activity,
